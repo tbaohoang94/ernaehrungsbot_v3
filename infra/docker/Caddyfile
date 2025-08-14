@@ -1,14 +1,18 @@
-your.domain.tld {
-    encode gzip
-
-    @ws {
-        header Connection *Upgrade*
-        header Upgrade    websocket
-    }
-    reverse_proxy /ws/* n8n:5678
-    reverse_proxy n8n:5678
+{
+    email you@example.com   # optional: ACME-Kontakt
 }
 
+your.domain.tld {
+    encode zstd gzip
+    reverse_proxy n8n:5678
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        Referrer-Policy "no-referrer"
+    }
+}
+
+# Fallback für nackte :80 (optional, wenn du keinen A-Record ohne Host willst)
 :80 {
     redir https://{host}{uri}
 }

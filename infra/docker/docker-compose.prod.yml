@@ -32,37 +32,56 @@ services:
   n8n:
     image: n8nio/n8n:1.71.1
     restart: unless-stopped
+    command: n8n                 # UI + Webhooks
     expose:
       - "5678"
     environment:
       - N8N_HOST=${N8N_HOST}
-      - N8N_PORT=${N8N_PORT}
-      - N8N_PROTOCOL=${N8N_PROTOCOL}
-      - WEBHOOK_URL=${WEBHOOK_URL}
-      - N8N_EDITOR_BASE_URL=${N8N_EDITOR_BASE_URL}
+      - N8N_PORT=5678            # fix auf 5678 setzen
+      - N8N_PROTOCOL=https
+      - WEBHOOK_URL=https://${N8N_HOST}
+      - N8N_EDITOR_BASE_URL=https://${N8N_HOST}
       - N8N_SECURE_COOKIE=true
       - TZ=Europe/Berlin
-
       - N8N_LOG_FORMAT=${N8N_LOG_FORMAT}
       - N8N_LOG_LEVEL=${N8N_LOG_LEVEL}
       - N8N_METRICS=${N8N_METRICS}
-
       - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
-
+      - EXECUTIONS_MODE=queue
       - DB_TYPE=postgresdb
       - DB_POSTGRESDB_HOST=${DB_POSTGRESDB_HOST}
       - DB_POSTGRESDB_PORT=${DB_POSTGRESDB_PORT}
       - DB_POSTGRESDB_DATABASE=${DB_POSTGRESDB_DATABASE}
       - DB_POSTGRESDB_USER=${DB_POSTGRESDB_USER}
       - DB_POSTGRESDB_PASSWORD=${DB_POSTGRESDB_PASSWORD}
-
-      - EXECUTIONS_MODE=queue
       - QUEUE_BULL_REDIS_HOST=${QUEUE_BULL_REDIS_HOST}
       - QUEUE_BULL_REDIS_PORT=${QUEUE_BULL_REDIS_PORT}
-
     volumes:
       - n8n_data:/home/node/.n8n
       - ./local_files:/files
+    depends_on:
+      - postgres
+      - redis
+
+  n8n-worker:
+    image: n8nio/n8n:1.71.1
+    restart: unless-stopped
+    command: n8n worker
+    environment:
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+      - EXECUTIONS_MODE=queue
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=${DB_POSTGRESDB_HOST}
+      - DB_POSTGRESDB_PORT=${DB_POSTGRESDB_PORT}
+      - DB_POSTGRESDB_DATABASE=${DB_POSTGRESDB_DATABASE}
+      - DB_POSTGRESDB_USER=${DB_POSTGRESDB_USER}
+      - DB_POSTGRESDB_PASSWORD=${DB_POSTGRESDB_PASSWORD}
+      - QUEUE_BULL_REDIS_HOST=${QUEUE_BULL_REDIS_HOST}
+      - QUEUE_BULL_REDIS_PORT=${QUEUE_BULL_REDIS_PORT}
+      - TZ=Europe/Berlin
+    depends_on:
+      - postgres
+      - redis
 
 volumes:
   pg_data:

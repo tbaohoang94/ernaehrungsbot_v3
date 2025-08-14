@@ -1,5 +1,6 @@
 services:
   n8n:
+    ports: "5678:5678"
     # überschreibt/ergänzt nur Werte der Base
     environment:
       N8N_EDITOR_BASE_URL: ${N8N_EDITOR_BASE_URL}
