@@ -1,0 +1,14 @@
+your.domain.tld {
+    encode gzip
+
+    @ws {
+        header Connection *Upgrade*
+        header Upgrade    websocket
+    }
+    reverse_proxy /ws/* n8n:5678
+    reverse_proxy n8n:5678
+}
+
+:80 {
+    redir https://{host}{uri}
+}

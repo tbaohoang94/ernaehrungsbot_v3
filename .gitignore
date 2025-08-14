@@ -1,0 +1,12 @@
+# Lokale und Prod Secrets
+infra/docker/.env
+
+# Docker Volumes / Daten
+**/n8n_data/
+**/pg_data/
+**/redis_data/
+**/caddy_data/
+**/caddy_config/
+
+# Backups
+**/backups/
