@@ -10,3 +10,8 @@ infra/docker/.env
 
 # Backups
 **/backups/
+node_modules/
+.env
+*.log
+venv/
+.DS_Store

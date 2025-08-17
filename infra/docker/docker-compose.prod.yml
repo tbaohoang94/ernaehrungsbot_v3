@@ -32,7 +32,6 @@ services:
   n8n:
     image: n8nio/n8n:1.71.1
     restart: unless-stopped
-    command: n8n                 # UI + Webhooks
     expose:
       - "5678"
     environment:
@@ -58,7 +57,8 @@ services:
       - QUEUE_BULL_REDIS_PORT=${QUEUE_BULL_REDIS_PORT}
     volumes:
       - n8n_data:/home/node/.n8n
-      - ./local_files:/files
+      - ./infra/docker/files/workflow:/var/import/workflows:ro
+      - ./infra/docker/files/credentials:/var/import/credentials:ro
     depends_on:
       - postgres
       - redis
@@ -88,3 +88,5 @@ volumes:
   redis_data:
   caddy_data:
   caddy_config:
+  n8n_data:
+

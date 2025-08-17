@@ -12,6 +12,9 @@ prod-up:
 prod-down:
 	docker compose -f docker/docker-compose.yml -f docker/docker-compose.prod.yml down
 
+prod-down-v:
+	docker compose -f docker/docker-compose.yml -f docker/docker-compose.prod.yml down -v
+
 # Local-Kommandos (z. B. mit Cloudflare Tunnel)
 up-local:
 	docker compose -f docker/docker-compose.yml -f docker/docker-compose.local.yml up -d
